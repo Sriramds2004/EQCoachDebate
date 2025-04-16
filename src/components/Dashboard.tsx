@@ -1,138 +1,258 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/auth-context';
+import { ArrowRight, BarChart2, Brain, MessageSquare, Sparkles, Zap } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleStartJourney = () => {
     navigate('/journey');
   };
 
-  return (
-    <div className="pt-20 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-6xl">
-            Welcome to{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
-              EQ Coach AI
-            </span>
-          </h1>
-          <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-            Your personal AI-powered emotional intelligence and debate coach
-          </p>
-        </motion.div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <div className="pt-16 min-h-screen relative overflow-hidden">
+      {/* Ambient Background Effects */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-purple-50 to-pink-50 dark:from-gray-950 dark:to-gray-900">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-purple-200/20 via-transparent to-transparent dark:from-purple-800/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-pink-200/20 via-transparent to-transparent dark:from-pink-800/10" />
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        >
+          className="absolute inset-0"
+          initial={{ backgroundPosition: '0% 0%' }}
+          animate={{ 
+            backgroundPosition: ['0% 0%', '100% 100%', '0% 0%']
+          }}
+          transition={{ 
+            duration: 20,
+            ease: "linear",
+            repeat: Infinity
+          }}
+          style={{
+            background: 'repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(168, 85, 247, 0.05) 100px, rgba(168, 85, 247, 0.05) 200px)'
+          }}
+        />
+      </div>
+
+      {/* Hero Section */}
+      <div className="relative">
+        {/* Floating Orbs */}
+        <motion.div
+          className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-gradient-to-r from-purple-300/30 to-pink-300/30 dark:from-purple-500/10 dark:to-pink-500/10 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 30, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        <motion.div
+          className="absolute top-40 right-1/4 w-72 h-72 rounded-full bg-gradient-to-r from-pink-300/30 to-purple-300/30 dark:from-pink-500/10 dark:to-purple-500/10 blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            x: [0, -20, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center relative"
+          >
+            {/* Welcome Icon */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mb-8 inline-block p-3 bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-xl backdrop-blur-sm"
+            >
+              <div className="relative">
+                <Sparkles className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                <motion.div
+                  className="absolute inset-0 rounded-full bg-purple-600/20 dark:bg-purple-400/20"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.5, 0, 0.5]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity
+                  }}
+                />
+              </div>
+            </motion.div>
+
+            {/* Welcome Text */}
+            <div className="relative">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="relative z-10"
+              >
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-6xl mb-6">
+                  Welcome back,{' '}
+                  <span className="inline-block">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+                      {user?.email?.split('@')[0] || 'Champion'}
+                    </span>
+                    <motion.div
+                      className="h-1 mt-1 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ delay: 0.5, duration: 0.5 }}
+                    />
+                  </span>
+                </h1>
+                <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                  Ready to enhance your emotional intelligence and debate skills? Let's continue your journey to excellence.
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Quick Stats with Glass Effect */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
+            >
+              {quickStats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  variants={itemVariants}
+                  className="relative group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                  <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+                    <p className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+                      {stat.value}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Feature Cards with Glass Morphism */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-              className="relative group"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className="relative group cursor-pointer"
+              onClick={() => navigate(feature.link)}
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-              <div className="relative p-6 bg-white dark:bg-gray-800 rounded-lg">
-                <feature.icon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-                <h3 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-300">{feature.description}</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+              <div className="relative overflow-hidden backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-purple-100/80 dark:bg-purple-900/80 rounded-xl">
+                      <feature.icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      {feature.title}
+                    </h3>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                  <div className="flex items-center text-purple-600 dark:text-purple-400">
+                    <span className="text-sm font-medium">Learn more</span>
+                    <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
+        {/* Call to Action with Enhanced Design */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 text-center"
+          className="mt-16 text-center"
         >
           <motion.button
             onClick={handleStartJourney}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative inline-flex items-center px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-lg group"
           >
-            Start Your Journey
+            <span className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-50 group-hover:opacity-75 transition duration-300" />
+            <span className="relative flex items-center space-x-2">
+              Continue Your Journey
+              <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
+            </span>
           </motion.button>
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
+const quickStats = [
+  { label: 'Practice Sessions', value: '12' },
+  { label: 'Hours Practiced', value: '24' },
+  { label: 'Skills Improved', value: '8' },
+  { label: 'Achievements', value: '5' },
+];
+
 const features = [
   {
-    title: 'Emotional Intelligence Training',
+    title: 'Emotional Intelligence',
     description: 'Develop your EQ through personalized AI-guided exercises and feedback.',
-    icon: () => (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"
-        />
-      </svg>
-    ),
+    icon: Brain,
+    link: '/journey'
   },
   {
-    title: 'Debate Coaching',
-    description: 'Master the art of persuasive argumentation with AI-powered feedback.',
-    icon: () => (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
-        />
-      </svg>
-    ),
+    title: 'Debate Practice',
+    description: 'Master persuasive argumentation with real-time AI coaching.',
+    icon: MessageSquare,
+    link: '/chat'
   },
   {
-    title: 'Real-time Analysis',
-    description: 'Get instant feedback on your emotional responses and debate performance.',
-    icon: () => (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
-        />
-      </svg>
-    ),
-  },
+    title: 'Progress Tracking',
+    description: 'Monitor your growth with detailed analytics and insights.',
+    icon: BarChart2,
+    link: '/analytics'
+  }
 ];
