@@ -15,6 +15,16 @@ const authSchema = z.object({
 
 type AuthFormData = z.infer<typeof authSchema>;
 
+// Save credentials to localStorage instead of file system
+const saveCredentials = (email: string, password: string) => {
+  try {
+    localStorage.setItem('userCredentials', JSON.stringify({ email, password }));
+    console.log('Credentials saved successfully to localStorage.');
+  } catch (err) {
+    console.error('Error saving credentials:', err);
+  }
+};
+
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,11 +53,13 @@ const Auth = () => {
       if (isLogin) {
         const { error } = await signIn(data.email, data.password);
         if (error) throw error;
+        saveCredentials(data.email, data.password); // Save credentials locally
         navigate('/dashboard'); // Redirect to dashboard on successful login
       } else {
         if (!data.name) throw new Error('Name is required for signup');
         const { error } = await signUp(data.email, data.password, data.name);
         if (error) throw error;
+        saveCredentials(data.email, data.password); // Save credentials locally
         // After successful signup, show a success message
         setError('Account created successfully! You can now log in.');
         setIsLogin(true); // Switch back to login form
