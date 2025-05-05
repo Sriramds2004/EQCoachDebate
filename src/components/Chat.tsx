@@ -186,11 +186,21 @@ const Debate = () => {
     resetTranscript();
     setIsListening(true);
     SpeechRecognition.startListening({ continuous: true });
+    // Stop AI speech when starting listening
+    if (aiSpeaking) {
+      window.speechSynthesis.cancel();
+      setAiSpeaking(false);
+    }
   };
 
   const stopListening = () => {
     setIsListening(false);
     SpeechRecognition.stopListening();
+    // Stop AI speech when stopping listening
+    if (aiSpeaking) {
+      window.speechSynthesis.cancel();
+      setAiSpeaking(false);
+    }
   };
 
   const speakMessage = (text: string) => {
@@ -896,20 +906,32 @@ const Debate = () => {
                   >
                     {isRecording ? <div className="h-3 w-3 bg-white rounded-sm"></div> : <Mic size={18} />}
                   </button>
-                  
-                  {/* Speech recognition button */}
+                    {/* Speech recognition button */}
                   {browserSupportsSpeechRecognition && (
                     <button
                       type="button"
-                      onClick={isListening ? stopListening : startListening}
-                      disabled={isLoading || aiSpeaking || isRecording}
+                      onClick={() => {
+                        // If AI is speaking, stop it
+                        if (aiSpeaking) {
+                          window.speechSynthesis.cancel();
+                          setAiSpeaking(false);
+                          return;
+                        }
+                        // Otherwise, toggle speech recognition
+                        if (isListening) {
+                          stopListening();
+                        } else {
+                          startListening();
+                        }
+                      }}
+                      disabled={isLoading || isRecording}
                       className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                        isListening
+                        isListening || aiSpeaking
                           ? 'bg-red-500 hover:bg-red-600 text-white' 
                           : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50'
-                      } ${(isLoading || aiSpeaking || isRecording) && 'opacity-50 cursor-not-allowed'}`}
+                      } ${(isLoading || isRecording) && 'opacity-50 cursor-not-allowed'}`}
                     >
-                      {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                      {aiSpeaking ? <MicOff size={18} /> : isListening ? <MicOff size={18} /> : <Mic size={18} />}
                     </button>
                   )}
                   
